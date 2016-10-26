@@ -2,97 +2,96 @@
 
 $(document).ready(function () {
 	
-	// Declaring all the nescasary variables here!
-
+	// Variable to check how which question the user is at
 	var questionNumber=0;
-	var questionBank=[];
+	// Two variables (stage & stage2), to create a div that leaves the screen and one that enters the screen
 	var stage="#game1";
-	var stage2={};
+	var stage2
+	// Variable to block a user from submitting a question
 	var questionLock=false;
-	var numberOfQuestions;
+	// Keeping track of the score
 	var score=0;
 
-	var quizlist = [
-
-		{
-			question:"What is not a word Anakin uses to describe sand?",
-			option1:"Infuriating",
-			option2:"Course",
-			option3:"Irritating"
-		},
-		{
-			question:"A New Hope: What is the first line?",
-			option1:"Did you hear that?",
-			option2:"They've shut down the main reactor!",
-			option3:"I've got a bad feeling about this."
-		},
-		{
-			question:"The Force Awakens: What language was Snoke's name inspired by?",
-			option1:"Dutch",
-			option2:"German",
-			option3:"French"
-		},
-		{
-			question:"How is George Lucas said to have given R2-D2 his name?",
-			option1:"From a script abbreviation - Reel 2, Dialogue 2",
-			option2:"From the number plate from his grandpa's car",
-			option3:"It was from his postcode"
-		},
-		{
-			question:"What was Han's response to Leia's 'I love you' declaration?",
-			option1:"I know",
-			option2:"Really?",
-			option3:"And I love you, sweet princess"
-		}
+	// Array with arrays of question + 3 answers.
+	var quizList = [
+		["What is not a word Anakin uses to describe sand?",
+		"Infuriating",
+		"Course",
+		"Irritating"
+		],
+		["A New Hope: What is the first line?",
+		"Did you hear that?",
+		"They've shut down the main reactor!",
+		"I've got a bad feeling about this."
+		],
+		["The Force Awakens: What language was Snoke's name inspired by?",
+		"Dutch",
+		"German",
+		"French"
+		],
+		["How is George Lucas said to have given R2-D2 his name?",
+		"From a script abbreviation - Reel 2, Dialogue 2",
+		"From the number plate from his grandpa's car",
+		"It was from his postcode"
+		],
+		["What was Han's response to Leia's 'I love you' declaration?",
+		"I know",
+		"Really?",
+		"And I love you, sweet princess"
+		]
 	]
 
-	for(i=0;i<quizlist.length;i++){ 
-		questionBank[i]=[];
-		questionBank[i][0]=quizlist[i].question;
-		questionBank[i][1]=quizlist[i].option1;
-		questionBank[i][2]=quizlist[i].option2;
-		questionBank[i][3]=quizlist[i].option3;
-	}
-	numberOfQuestions=questionBank.length; 
-
-	// End of variable input
+	//Total length of the quiz
+	var numberOfQuestions = quizList.length; 
 		
+	
 	// Button to start the quiz
-
 	$('.start').click(function() {
+		// if button is clicked hide the startscreen
 		$('.startscreen').hide()
+		// and display the question
 		displayQuestion();
 	})
 
-	//DISPLAY QUESTION
+	//DEFINING DISPLAY QUESTION
 	function displayQuestion(){
+
 		// Randomise the order of answers each time you play
+
+		// Three times random number between 0-1
 		var rnd=Math.random()*3;
+		// round it up 
 		rnd=Math.ceil(rnd);
-		var q1;
-		var q2;
-		var q3;
+
+		// Create three option variables
+		var option1;
+		var option2;
+		var option3;
 
 		if (rnd==1) {
-			q1=questionBank[questionNumber][1];
-			q2=questionBank[questionNumber][2];
-			q3=questionBank[questionNumber][3];
+			option1=quizList[questionNumber][1];
+			option2=quizList[questionNumber][2];
+			option3=quizList[questionNumber][3];
 		}
 		if (rnd==2) {
-			q2=questionBank[questionNumber][1];
-			q3=questionBank[questionNumber][2];
-			q1=questionBank[questionNumber][3];
+			option2=quizList[questionNumber][1];
+			option3=quizList[questionNumber][2];
+			option1=quizList[questionNumber][3];
 		}
 		if (rnd==3) {
-			q3=questionBank[questionNumber][1];
-			q1=questionBank[questionNumber][2];
-			q2=questionBank[questionNumber][3];
+			option3=quizList[questionNumber][1];
+			option1=quizList[questionNumber][2];
+			option2=quizList[questionNumber][3];
 		}
 
-		// Setting up timeout functions, where we need a global variable for timeOut to use it with clearTimeout
+		// Append question + three options to div
+		$(stage).append('<div class="questionText">'+quizList[questionNumber][0]+'</div><div id="1" class="option">'+option1+'</div><div id="2" class="option">'+option2+'</div><div id="3" class="option">'+option3+'</div>');
 
+
+		// Setting up timeout functions, where we need a global variable for timeOut to use it with clearTimeout
 		var timeOut;
 
+		// This function starts a ticking clock that goes from 0-10
 		function ticking() {
 			timeOut = setTimeout(function() {
 				if (questionLock == false) { // <--- This makes sure that you cant click an answer after time out
@@ -105,11 +104,10 @@ $(document).ready(function () {
 			},10000);
 		};
 
+		// Stops ticking from counting
         function stopticking() {
             clearTimeout(timeOut)
         };
-
-		$(stage).append('<div class="questionText">'+questionBank[questionNumber][0]+'</div><div id="1" class="option">'+q1+'</div><div id="2" class="option">'+q2+'</div><div id="3" class="option">'+q3+'</div>');
 
 		// Press an option to stop the clock and see if the user is wrong or right
 		$('.option').click(function() {
